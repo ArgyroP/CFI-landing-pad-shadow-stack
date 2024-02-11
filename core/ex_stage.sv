@@ -128,7 +128,7 @@ module ex_stage import ariane_pkg::*; #(
     input logic                                    xLPAD_i,
     input riscv::elp                               elp_i ,
     input logic                                    xSSE_i,
-    //input riscv::xlen_t                            ssp_i
+    input riscv::xlen_t                            ssp_i,
     output exception_t                             ss_popchk_ex
     //output riscv::xlen_t                           ssp_o
 );
@@ -355,7 +355,8 @@ module ex_stage import ariane_pkg::*; #(
         .lsu_addr_trans_id_o,
         .ssp_o (ssp),
         .ss_popchk_ex   ( ss_popchk_ex ),
-        .xSSE_i (xSSE_i)
+        .xSSE_i (xSSE_i),
+        .ssp_i (ssp_i)
     );
 
     if (CVXIF_PRESENT) begin : gen_cvxif

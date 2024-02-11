@@ -81,7 +81,7 @@ module load_store_unit import ariane_pkg::*; #(
     output [ariane_pkg::TRANS_ID_BITS-1:0] lsu_addr_trans_id_o,
     output riscv::xlen_t            ssp_o,
     output exception_t              ss_popchk_ex,
-    //input riscv::xlen_t             ssp_i,
+    input riscv::xlen_t             ssp_i,
     input logic                     xSSE_i
 );
     // data is misaligned
@@ -511,7 +511,7 @@ module load_store_unit import ariane_pkg::*; #(
             unique case(fu_data_i.operator)
                 SSPOPCHK_X1: begin 
                 //t_ssp = ssp_q + (riscv::XLEN/8);
-                    vaddr_xlen = $unsigned($signed(ssp_q) + $signed(ssp));
+                    vaddr_xlen = $unsigned($signed(ssp_q) + $signed(ssp_i));
                     tmp_fu_data_reg_d.operator = fu_data_i.operator;
                     tmp_fu_data_reg_d.operand_a = fu_data_i.operand_a;
                     tmp_fu_data_reg_d.operand_b = fu_data_i.operand_b;
@@ -522,7 +522,7 @@ module load_store_unit import ariane_pkg::*; #(
                     end
                 SSPOPCHK_X5: begin 
                     //t_ssp = ssp_q + (riscv::XLEN/8);                
-                    vaddr_xlen = $unsigned($signed(ssp_q) + $signed(ssp));
+                    vaddr_xlen = $unsigned($signed(ssp_q) + $signed(ssp_i));
                     tmp_fu_data_reg_d.operator = fu_data_i.operator;
                     tmp_fu_data_reg_d.operand_a = fu_data_i.operand_a;
                     tmp_fu_data_reg_d.operand_b = fu_data_i.operand_b;
@@ -532,22 +532,22 @@ module load_store_unit import ariane_pkg::*; #(
                     ss_instr = 1'b1;
                     end
                 SSAMOSWAP_D: begin 
-                    vaddr_xlen = $unsigned($signed(fu_data_i.operand_a) + $signed(ssp)); 
+                    vaddr_xlen = $unsigned($signed(fu_data_i.operand_a) + $signed(ssp_i)); 
                     ss_instr = 1'b1;
                     end
                 SSAMOSWAP_W: begin 
-                    vaddr_xlen = $unsigned($signed(fu_data_i.operand_a) + $signed(ssp)); 
+                    vaddr_xlen = $unsigned($signed(fu_data_i.operand_a) + $signed(ssp_i)); 
                     ss_instr = 1'b1;
                     end
                 SSPUSH_X1: begin  
                 // ssp_d=ssp_q - (riscv::XLEN/8)
                     t_ssp = ssp_q - (riscv::XLEN/8);
-                    vaddr_xlen = $unsigned($signed(t_ssp) + $signed(ssp));  
+                    vaddr_xlen = $unsigned($signed(t_ssp) + $signed(ssp_i));  
                     ss_instr = 1'b1;              
                 end
                 SSPUSH_X5: begin
                     t_ssp = ssp_q - (riscv::XLEN/8);
-                    vaddr_xlen = $unsigned($signed(t_ssp) + $signed(ssp));   
+                    vaddr_xlen = $unsigned($signed(t_ssp) + $signed(ssp_i));   
                     ss_instr = 1'b1;
                 end
                 default: vaddr_xlen = $unsigned($signed(fu_data_i.imm) + $signed(fu_data_i.operand_a));
@@ -557,7 +557,7 @@ module load_store_unit import ariane_pkg::*; #(
     end
   
    riscv::xlen_t ssp;
-    assign ssp = 64'h4000000000; //64'h0000003FFFFFFAFF;
+    //assign ssp = 64'h0000003fff800000;//64'h4000000000; //64'h0000003FFFFFFAFF;
     
     always_comb begin : ssp_update
     

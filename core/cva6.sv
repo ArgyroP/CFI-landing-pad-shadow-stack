@@ -273,7 +273,7 @@ module cva6 import ariane_pkg::*; #(
   logic xLPAD;
   riscv::elp elp_o,elp_csr_ex;
   logic [1:0] complete_cfi,xSSE_i,xSSE_o;
- riscv::xlen_t ssp_i;
+ riscv::xlen_t ssp_i,ssp_csr_lsu;
  exception_t ss_popchk_ex;
   /*logic elp_init_fr_reg;
   riscv::label label;
@@ -341,7 +341,7 @@ module cva6 import ariane_pkg::*; #(
     .tw_i                       ( tw_csr_id                  ),
     .tsr_i                      ( tsr_csr_id                 ),
     .xLPAD_i                    ( xLPAD                      ),
-    .xSSE_i                     ( xSSE_i                     )
+    .xSSE_i                     ( xSSE_o                     )
   );
 
   logic [NR_WB_PORTS-1:0][TRANS_ID_BITS-1:0] trans_id_ex_id;
@@ -541,7 +541,7 @@ module cva6 import ariane_pkg::*; #(
     .xLPAD_i                ( xLPAD                       ),
     .elp_i                  ( elp_csr_ex                  ),
     .xSSE_i                 ( xSSE_o                      ),
-    //.ssp_i                  ( ssp_i                       ),
+    .ssp_i                  ( ssp_csr_lsu                       ),
     .ss_popchk_ex           ( ss_popchk_ex                )
   );
 
@@ -649,6 +649,7 @@ module cva6 import ariane_pkg::*; #(
    // .lp_exp                 ( lp_exp                        ),
     .xLPAD_o                ( xLPAD                      ),
     .xSSE_o                 ( xSSE_o                        ),  
+    .ssp_o                  ( ssp_csr_lsu),
     .debug_req_i,
     .ipi_i,
     .irq_i,
